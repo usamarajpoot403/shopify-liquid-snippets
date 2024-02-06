@@ -1,0 +1,454 @@
+<style>
+
+  /* Load Fonts For Main Heading */
+  {{ section.settings.type_heading_font | font_face }}
+
+  /* Load Fonts For Feature Title */
+  {{ section.settings.type_feature_title_font | font_face }}
+
+  /* Load Fonts For Feature Text */
+  {{ section.settings.type_feature_text_font | font_face }}
+
+  #shopify-section-{{ section.id }}.shopify-section-feature-set {
+    padding: {{ section.settings.padding_section_top_bottom }}px 0;
+    background: {{ section.settings.background }};
+  }
+
+  #shopify-section-{{ section.id }} .crokit__feature--title {
+    font-family: {{ section.settings.type_heading_font.family }};
+    font-weight: {{ section.settings.type_heading_font.weight }};
+    font-size: {{ section.settings.heading_font_size }}px;
+    color: {{ section.settings.heading_color }};
+  }
+
+  #shopify-section-{{ section.id }} .crokit__feature-container {
+    max-width: {{ section.settings.max_width }}px;
+    padding: {{ section.settings.padding_container }}px;
+    margin: auto;
+  }
+
+  #shopify-section-{{ section.id }} .crokit__feature-container-inner {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    padding: 10px;
+  }
+
+  #shopify-section-{{ section.id }} .crokit__feature-item {
+    display: flex;
+    width: 100%;
+    gap: {{ section.settings.image_content_gap }}px;
+    margin-bottom: 10px;
+    padding: {{ section.settings.feature_box_padding }}px;
+  }
+
+  #shopify-section-{{ section.id }} .crokit__feature-item.crokit__feature-item--vertical {
+    flex-direction: column;
+    text-align: center;
+  }
+
+/* @media screen and (max-width: 767px) {
+    .crokit__feature_container_inner {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .crokit__feature_container_inner {
+        grid-template-columns: repeat(1, 1fr);
+    }
+} */
+
+#shopify-section-{{ section.id }} .crokit__feature-item .crokit__feature-image {
+    flex-shrink: 0;
+    align-self: center;
+    height: 100%;
+}
+
+#shopify-section-{{ section.id }} .crokit__feature-item.crokit__feature-item--vertical .crokit__feature-image {
+  flex: 1;
+}
+
+#shopify-section-{{ section.id }} .crokit__feature-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+#shopify-section-{{ section.id }} .crokit__feature-text {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-self: {{ section.settings.content_alignment }};
+}
+
+#shopify-section-{{ section.id }} .crokit__feature-text--title {
+    margin-bottom: 0;
+    margin-top: 0;
+    color: {{ section.settings.feature_title_color }};
+
+    /* Set font to feature block title */
+    font-family: {{ section.settings.type_feature_title_font.family }};
+    font-weight: {{ section.settings.type_feature_title_font.weight }};
+    font-size: {{ section.settings.feature_title_font_size }}px;
+}
+
+#shopify-section-{{ section.id }} .crokit__feature-text--content {
+    color: {{ section.settings.feature_text_color }};
+
+    /* Set font to feature block text */
+    font-family: {{ section.settings.type_feature_text_font.family  }};
+    font-weight: {{ section.settings.type_feature_text_font.weight }};
+    font-size: {{ section.settings.feature_text_font_size }}px;
+  }
+
+  @media only screen and (max-width: 767px) {
+    #shopify-section-{{ section.id }} .crokit__feature--title {
+      font-size: {{ section.settings.heading_font_size | times:  section.settings.mobile_heading_font_size_reducer | times: 0.01 }}px;
+   }
+
+   #shopify-section-{{ section.id }} .crokit__feature-text--title {
+      font-size: {{ section.settings.feature_title_font_size | times: section.settings.mobile_heading_font_size_reducer | times: 0.01 }}px;
+    }
+
+
+    #shopify-section-{{ section.id }} .crokit__feature-text--content {
+      font-size: {{ section.settings.feature_text_font_size | times: section.settings.mobile_text_font_size_reducer | times: 0.01 }}px;
+    }
+  }
+
+</style>
+
+{%- if section.settings.heading != blank -%}
+  <h2 class="crokit__feature--title" style="text-align:{{ section.settings.heading_aligment }}">{{ section.settings.heading }}</h2>
+{%- endif -%}
+<div class="crokit__feature-container">
+  <div class="crokit__feature-container-inner">
+    {% for block in section.blocks %}
+    <div class="crokit__feature-item {% if section.settings.image_content_position == 'vertical' %}crokit__feature-item--vertical{% endif %}" style="background-color: {{ block.settings.feature_box_background_color }}; border-radius: {{ block.settings.feature_box_border_radius }}px">
+        <div class="crokit__feature-image" style="width:{{ block.settings.image_width }}%">
+          {%- if block.settings.image != blank -%}
+              <img src="{{ block.settings.image | img_url: 'master' }}">
+
+              {%- else -%}
+              {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
+
+          {%- endif -%}
+        </div>
+        <div class="crokit__feature-text" style="gap:{{ block.settings.text_gap }}px">
+          <h2 class="crokit__feature-text--title">{{ block.settings.feature_title }}</h2>
+          <div class="crokit__feature-text--content">{{ block.settings.feature_content }}</div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "CROkit Feature Set",
+    "tag": "section",
+    "class": "shopify-section-feature-set",
+    "max_blocks": 4,
+    "settings": [
+      {
+        "type": "header",
+        "content": "Section Settings"
+      },
+      {
+        "type": "range",
+        "id": "padding_section_top_bottom",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "label": "Top Bottom Section Padding",
+        "default": 0
+      },
+      {
+        "type": "color_background",
+        "id": "background",
+        "label": "Background",
+        "default": "transparent"
+      },
+      {
+        "type": "header",
+        "content": "Main Heading Settings"
+      },
+      {
+        "type": "text",
+        "id": "heading",
+        "default": "Our Guarantee",
+        "label": "Heading"
+      },
+      {
+        "type": "radio",
+        "id": "heading_aligment",
+        "label": "Heading Alignment",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Centered"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "center"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_heading_font",
+        "label": "Heading Font",
+        "default": "helvetica_n4"
+      },
+      {
+        "type": "range",
+        "id": "heading_font_size",
+        "min": 24,
+        "max": 72,
+        "step": 1,
+        "unit": "px",
+        "label": "Heading Font Size",
+        "default": 32
+      },
+      {
+        "type": "color",
+        "id": "heading_color",
+        "label": "Heading Color",
+        "default": "#000"
+      },
+      {
+        "type": "header",
+        "content": "Container Settings"
+      },
+      {
+        "type": "range",
+        "id": "max_width",
+        "min": 275,
+        "max": 1600,
+        "step": 25,
+        "unit": "px",
+        "label": "Container Max Width",
+        "default": 1200,
+        "info": "This is the max width allowed for the Feature Section."
+      },
+      {
+        "type": "range",
+        "id": "padding_container",
+        "min": 0,
+        "max": 90,
+        "step": 1,
+        "unit": "px",
+        "label": "Container Padding",
+        "default": 20
+      },
+      {
+        "type": "header",
+        "content": "Block Settings"
+      },
+      {
+        "type": "radio",
+        "id": "image_content_position",
+        "label": "Image Content Position",
+        "options": [
+          {
+            "value": "horizontal",
+            "label": "Horizontal"
+          },
+          {
+            "value": "vertical",
+            "label": "Vertical"
+          }
+        ],
+        "default": "horizontal",
+        "info": "Controls the position of image and content."
+      },
+      {
+        "type": "range",
+        "id": "image_content_gap",
+        "min": 0,
+        "max": 64,
+        "step": 1,
+        "unit": "px",
+        "label": "Image Content Gap",
+        "default": 5
+      },
+      {
+        "type": "radio",
+        "id": "content_alignment",
+        "label": "Vertical Text Alignment",
+        "options": [
+          {
+            "value": "start",
+            "label": "Top"
+          },
+          {
+            "value": "center",
+            "label": "Centered"
+          },
+          {
+            "value": "end",
+            "label": "Bottom"
+          }
+        ],
+        "default": "center",
+        "info": "Controls the vertical alignment for each individual block. (This only works if image and content are aligned horizontally)"
+      },
+      {
+        "type": "range",
+        "id": "feature_box_padding",
+        "min": 0,
+        "max": 20,
+        "step": 1,
+        "unit": "px",
+        "label": "Feature Box Padding",
+        "default": 0
+      },
+      {
+        "type": "font_picker",
+        "id": "type_feature_title_font",
+        "label": "Feature Title Font",
+        "default": "helvetica_n4"
+      },
+      {
+        "type": "range",
+        "id": "feature_title_font_size",
+        "min": 12,
+        "max": 24,
+        "step": 1,
+        "unit": "px",
+        "label": "Feature Title Font Size",
+        "default": 12
+      },
+      {
+        "type": "color",
+        "id": "feature_title_color",
+        "label": "Feature Title Color",
+        "default": "#000"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_feature_text_font",
+        "label": "Feature Text Font",
+        "default": "helvetica_n4"
+      },
+      {
+        "type": "range",
+        "id": "feature_text_font_size",
+        "min": 12,
+        "max": 18,
+        "step": 1,
+        "unit": "px",
+        "label": "Feature Text Font Size",
+        "default": 12
+      },
+      {
+        "type": "color",
+        "id": "feature_text_color",
+        "label": "Feature Text Color",
+        "default": "#000"
+      },
+      {
+        "type": "header",
+        "content": "Mobile Font Size Settings",
+        "info": "The font size can be reduced on mobile by utilizing a slider"
+      },
+      {
+        "type": "range",
+        "id": "mobile_heading_font_size_reducer",
+        "min": 50,
+        "max": 100,
+        "unit": "%",
+        "step": 1,
+        "label": "Mobile Heading Font Size",
+        "default": 100
+      },
+      {
+        "type": "range",
+        "id": "mobile_text_font_size_reducer",
+        "min": 50,
+        "max": 100,
+        "unit": "%",
+        "step": 1,
+        "label": "Mobile Text Font Size",
+        "default": 100
+      }
+    ],
+    "blocks": [
+      {
+        "name": "Feature",
+        "type": "feature_section",
+        "settings": [
+          {
+            "type": "color",
+            "id": "feature_box_background_color",
+            "label": "Feature Box Background Color",
+            "default": "transparent"
+          },
+          {
+            "type": "range",
+            "id": "feature_box_border_radius",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "unit": "px",
+            "label": "Feature Box Roundness",
+            "default": 0
+          },
+          {
+            "type": "text",
+            "id": "feature_title",
+            "label": "Feature Title",
+            "default": "Feature Title"
+          },
+          {
+            "type": "header",
+            "content": "Individual Feature Settings"
+          },
+          {
+            "type": "range",
+            "id": "text_gap",
+            "min": 0,
+            "max": 32,
+            "step": 1,
+            "unit": "px",
+            "label": "Text Gap",
+            "default": 10,
+            "info": "This controls the distance between the title and content."
+          },
+          {
+            "type": "text",
+            "id": "feature_content",
+            "label": "Feature Content",
+            "default": "Feature content"
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          },
+          {
+            "type": "range",
+            "id": "image_width",
+            "min": 10,
+            "max": 50,
+            "step": 1,
+            "label": "Image Width",
+            "default": 28
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "CROkit Feature Set"
+      }
+    ]
+  }
+{% endschema %}

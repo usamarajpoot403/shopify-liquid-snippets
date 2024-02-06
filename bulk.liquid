@@ -1,0 +1,290 @@
+ {% assign isBuyMoreCollection = false %}
+
+        {% for collection in product.collections %}
+          {% if collection.handle == 'buy-more' %}
+            {% assign isBuyMoreCollection = true %}
+          {% endif %}
+        {% endfor %}
+
+        {% if isBuyMoreCollection %}
+          <!-- Render content for the "buy-more" collection -->
+
+          <!-- Bulk Product Options -->
+img.bulk-image {
+    width: 80px;
+    position: absolute;
+    right: -60px;
+    z-index: 111;
+    top: -5px;
+}
+          <style>
+                        .bulk-wrapper {
+                            width: 100%;
+                            padding: 20px;
+                            border: 1px solid #e9e9e957;
+                            box-shadow: 2px 2px 10px 10px #f1f1f173;
+                            position: relative;
+                        }
+
+                        .bulk-wrapper h4 {
+                            margin-top: 0;
+                            margin-bottom: 20px;
+                            font-size: 22px;
+                            font-weight: 600;
+                        }
+
+                        .bulk-wrapper form {
+                            display: flex;
+                            flex-direction: column;
+                        }
+
+                        .bulk-wrapper form input,.bulk-wrapper form select {
+                            border: 1px solid #e3e3e3;
+                            padding: 10px;
+                            font-size: 14px;
+                            font-weight: 400;
+                            width: 100%;
+                            background: #e9e9e940;
+                              border-radius: 0;
+                        }
+
+                        div#variant-selects label {
+                            align-items: baseline;
+                            gap: 10px;
+                            width: 48%;
+                            display: flex;
+                            flex-direction: column;
+                        }
+
+                        div#variant-selects {
+                            margin-top: 23px;
+                            display: flex;
+                            flex-wrap: wrap;
+                            gap: 15px;
+                        }
+
+                        .bulk-wrapper button {
+                            background: #000;
+                            padding: 12px;
+                            color: #fff;
+                            text-transform: capitalize;
+                            border: 0;
+                            margin-top: 20px;
+                        }
+                          .bulk-wrapper i {
+                            background: #000;
+                            color: #fff;
+                            padding: 4px;
+                            border-radius: 6px;
+                        }
+                          .qunatity-select-wrapper {
+                            display: flex;
+                            align-items: center;
+                            border: 1px solid #dfdfdf;
+                            border-radius: 40px;
+                        }
+
+                        .qunatity-select-wrapper input#quantity {
+                            width: 100%;
+                            height: 40px;
+                            appearance: none;
+                            text-align: center;
+                            border: 00;
+                            color: #000;
+                            font-weight: 600;
+                        }
+
+                        .bulk-wrapper button {
+                            cursor: pointer;
+                        }
+
+                        .qunatity-select-wrapper button {
+                            font-size: 20px;
+                            margin: 0;
+                            height: 45px;
+                            width: 65px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            border-radius: 0;
+                        }
+                        .qunatity-select-wrapper input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{
+                             -webkit-appearance: none;
+                          margin: 0;
+                        }
+
+
+            p#original-price,p#discounted-price {
+                margin-top: 10px;
+                margin-bottom: 15px;
+                font-size: 15px;
+                font-weight: 500;
+                color: #000;
+            }
+
+
+            [for="quantity"] {
+                margin-top: 0;
+                margin-bottom: 7px;
+            }
+
+            .bulk-wrapper::after {
+                content: "";
+                background: url(https://cdn.shopify.com/s/files/1/0583/1403/1163/files/43916.png?v=1702685678);
+                height: 45px;
+                width: 45px;
+                position: absolute;
+                top: 0;
+                right: 0;
+                z-index: 10;
+                background-color: #fff;
+            }
+          </style>
+
+          <div class="bulk-wrapper">
+            <img src="https://cdn.shopify.com/s/files/1/0583/1403/1163/files/43916.png?v=1702685678" class="bulk-image">
+            <h4>Buy More, Save More</h4>
+            <i>Note: To apply the discount, enter code "10%OFF" during checkout.</i>
+
+            <form action="/cart/add" method="post" enctype="multipart/form-data" id="add-to-cart-form">
+              <input type="hidden" name="properties[Discounted Price]" id="discounted-price-input" value="">
+
+              <!-- Assuming you have an element to display the original price -->
+              <p id="original-price">Original Price: {{ product.price | money }}</p>
+
+              <!-- Add an element to display the discounted price -->
+              <p id="discounted-price" style="display: none;">
+                Discounted Price: $<span id="discounted-amount"></span>
+              </p>
+
+              <label for="quantity">Quantity:</label>
+              <div class="qunatity-select-wrapper">
+                <button type="button" onclick="decrementQuantity()">-</button>
+                <input
+                  type="number"
+                  id="quantity"
+                  name="quantity"
+                  value="1"
+                  min="1"
+                  oninput="updateVariants(this.value)"
+                >
+                <button type="button" onclick="incrementQuantity()">+</button>
+              </div>
+              <div id="variant-selects"></div>
+
+              <!-- Include the product ID as a hidden field -->
+              <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+
+              <!-- Include the variant selection for each quantity as hidden fields -->
+              <div id="variant-hidden-fields"></div>
+
+              <!-- Add this line inside your form to include a product identifier -->
+              <input type="hidden" name="properties[bulk_discount_product]" value="{{ product.id }}">
+
+              <button
+                type="submit"
+                name="add"
+                id="add-to-cart"
+                data-price="{{ product.price | money_without_currency | remove: "," | times: 100 }}"
+              >
+                Buy These Save 10%
+              </button>
+            </form>
+          </div>
+
+          <script>
+
+function incrementQuantity() {
+        var quantityInput = document.getElementById("quantity");
+        quantityInput.value = parseInt(quantityInput.value) + 1;
+        updateVariants(quantityInput.value);
+    }
+
+    function decrementQuantity() {
+        var quantityInput = document.getElementById("quantity");
+        if (parseInt(quantityInput.value) > 1) {
+            quantityInput.value = parseInt(quantityInput.value) - 1;
+            updateVariants(quantityInput.value);
+        }
+    }
+
+    
+    function updateVariants(quantity) {
+      var variantSelects = document.getElementById('variant-selects');
+      var variantHiddenFields = document.getElementById('variant-hidden-fields');
+
+      variantSelects.innerHTML = '';
+      variantHiddenFields.innerHTML = '';
+
+      for (var i = 1; i <= quantity; i++) {
+        variantSelects.innerHTML += `
+          <label for="variant-${i}">
+            Select Variant #${i}:
+            <select id="variant-${i}" name="properties[variant_${i}]">
+              {% for variant in product.variants %}
+                <option value="{{ variant.title }}">{{ variant.title }} - {{ variant.price | money }}</option>
+              {% endfor %}
+            </select>
+          </label>
+        `;
+
+        // Include quantity as a property
+        variantHiddenFields.innerHTML += `
+          <input type="hidden" name="properties[quantity_${i}]" value="1"> <!-- You can adjust the default quantity as needed -->
+        `;
+      }
+
+      // Trigger a change event to recalculate discounts based on the new quantity
+      document.getElementById('quantity').dispatchEvent(new Event('change'));
+    }
+          </script>
+          <script>
+            document.addEventListener('DOMContentLoaded', function() {
+              document.getElementById('quantity').addEventListener('change', function() {
+                var quantity = parseInt(this.value);
+                var originalPrice = {{ product.price | money_without_currency | remove: "," | times: 100 }};
+                var discount = 0.10; // 10% discount
+
+                // Calculate the discounted price
+                var discountedAmount = originalPrice * quantity * discount;
+                var discountedPrice = (originalPrice * quantity) - discountedAmount;
+
+                // Update the displayed price elements
+                document.getElementById('original-price').style.display = 'none';
+                document.getElementById('discounted-amount').innerText = (discountedPrice / 100).toFixed(2);
+                document.getElementById('discounted-price').style.display = 'block';
+
+                // Update the "Add to Cart" button with the discounted price and quantity
+                document.getElementById('add-to-cart').dataset.price = discountedPrice;
+                document.getElementById('add-to-cart').dataset.quantity = quantity;
+
+
+              });
+            });
+          </script>
+
+          <!-- Bulk Product Options End -->
+
+        {% else %}
+
+
+
+
+
+cart code
+
+             <!-- Custom Options -->
+                <ul class="custom-meta">
+                  <li><b>Total Qunatity: </b>{{ item.quantity }}</li>
+
+                  {% if item.variant.price != item.line_price %}
+                    <li><b>Original Price:</b> ${{ item.variant.price | money }}</li>
+                    <li>
+                      <b> Discounted Price: $</b>
+                      {{- item.line_price | money }}
+                    </li>
+
+                  {% else %}
+                    Price: ${{ item.line_price | money }}
+                  {% endif %}
+                </ul>

@@ -1,0 +1,465 @@
+<style>
+
+    /* Load fonts for panel title */
+    {{ section.settings.panel_heading_font | font_face }}
+
+    /* Load fonts for panel text */
+    {{ section.settings.panel_text_font | font_face }}
+
+  #shopify-section-{{ section.id }}.shopify-section-panel-carousel {}
+
+  #shopify-section-{{ section.id }} .crokit__panel-container {
+    background: {{ section.settings.panel_container_background }};
+    display: flex;
+    min-width: 100%;
+    overflow-x: auto;
+
+    cursor: -webkit-grab; /* Chrome 1-21, Safari 4+ */
+    cursor:    -moz-grab; /* Firefox 1.5-26 */
+    cursor:         grab; /* W3C standards syntax, should come least */
+
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+  }
+
+  #shopify-section-{{ section.id }} .crokit__panel-container:active {
+      cursor: -moz-grabbing;
+      cursor: -webkit-grabbing;
+      cursor: grabbing;
+  }
+
+  /* Hide scrollbar from Chrome, Safari and Opera */
+  #shopify-section-{{ section.id }} .crokit__panel-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar from IE, Edge and Firefox */
+  #shopify-section-{{ section.id }} .crokit__panel-container {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  #shopify-section-{{ section.id }} .crokit__panel-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  #shopify-section-{{ section.id }} .crokit__panel {
+    /* min-width: 350px; */
+    min-width: {{ section.settings.panel_min_width }}px;
+    padding: {{ section.settings.panel_padding_top }}px {{ section.settings.panel_padding_right }}px {{ section.settings.panel_padding_bottom }}px {{ section.settings.panel_padding_left }}px;
+    cursor: pointer;
+  }
+
+  #shopify-section-{{ section.id }} .crokit__panel:hover {
+    background-color: {{ section.settings.hover_panel_background }};
+  }
+
+  #shopify-section-{{ section.id }} .crokit__panel.crokit__panel--active {
+    background-color: {{ section.settings.active_panel_background }};
+  }
+
+  #shopify-section-{{ section.id }} .crokit__panel-title {
+    font-family: {{ section.settings.panel_heading_font.family }};
+    font-size: {{ section.settings.panel_heading_font_size }}px;
+    color: {{ section.settings.panel_heading_color }};
+    margin-bottom: {{ section.settings.panel_heading_bottom_margin }}px;
+  }
+
+  #shopify-section-{{ section.id }} .crokit__panel-text {
+    font-family: {{ section.settings.panel_text_font.family }};
+    font-size: {{ section.settings.panel_text_font_size }}px;
+    color: {{ section.settings.panel_text_color }};
+  }
+
+  @media (min-width: 992px) {
+    #shopify-section-{{ section.id }} .crokit__panel-img-container {
+      height: {% if section.settings.panel_image_height > 1000 %} 100% {% else %} {{ section.settings.panel_image_height }}px {% endif %};
+    }
+  }
+
+</style>
+
+{% assign image = section.blocks[0].settings.panel_image %}
+
+{%- comment -%} Define image srcset values {%- endcomment -%}
+{%- capture image_srcset -%}
+  {%- if image != blank -%}
+    {%- if image.width >= 180 -%}{{ image | img_url: '180x' }} 180w, {%- endif -%}
+    {%- if image.width >= 360 -%}{{ image | img_url: '360x' }} 360w, {%- endif -%}
+    {%- if image.width >= 540 -%}{{ image | img_url: '540x' }} 540w, {%- endif -%}
+    {%- if image.width >= 720 -%}{{ image | img_url: '720x' }} 720w, {%- endif -%}
+    {%- if image.width >= 900 -%}{{ image | img_url: '900x' }} 900w, {%- endif -%}
+    {%- if image.width >= 1080 -%}{{ image | img_url: '1080x' }} 1080w, {%- endif -%}
+    {%- if image.width >= 1296 -%}{{ image | img_url: '1296x' }} 1296w, {%- endif -%}
+    {%- if image.width >= 1512 -%}{{ image | img_url: '1512x' }} 1512w, {%- endif -%}
+    {%- if image.width >= 1728 -%}{{ image | img_url: '1728x' }} 1728w, {%- endif -%}
+    {%- if image.width >= 1950 -%}{{ image | img_url: '1950x' }} 1950w, {%- endif -%}
+    {%- if image.width >= 2100 -%}{{ image | img_url: '2100x' }} 2100w, {%- endif -%}
+    {%- if image.width >= 2260 -%}{{ image | img_url: '2260x' }} 2260w, {%- endif -%}
+    {%- if image.width >= 2450 -%}{{ image | img_url: '2450x' }} 2450w, {%- endif -%}
+    {%- if image.width >= 2700 -%}{{ image | img_url: '2700x' }} 2700w, {%- endif -%}
+    {%- if image.width >= 3000 -%}{{ image | img_url: '3000x' }} 3000w, {%- endif -%}
+    {%- if image.width >= 3350 -%}{{ image | img_url: '3350x' }} 3350w, {%- endif -%}
+    {%- if image.width >= 3750 -%}{{ image | img_url: '3750x' }} 3750w, {%- endif -%}
+    {%- if image.width >= 4100 -%}{{ image | img_url: '4100x' }} 4100w, {%- endif -%}
+    {%- comment -%}{{ image | img_url: 'master' }} {{ image.width }}w{%- endcomment -%}
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- comment -%} Define image_sizes {%- endcomment -%}
+{%- capture image_sizes -%}
+  {%- if image.width >= 180 -%}(max-width: 180px) 180w, {%- endif -%}
+  {%- if image.width >= 360 -%}(min-width: 181px) 360w, {%- endif -%}
+  {%- if image.width >= 540 -%}(min-width: 361px) 540w, {%- endif -%}
+  {%- if image.width >= 720 -%}(min-width: 541px) 720w, {%- endif -%}
+  {%- if image.width >= 900 -%}(min-width: 721px) 900w, {%- endif -%}
+  {%- if image.width >= 1080 -%}(min-width: 901px) 1080w, {%- endif -%}
+  {%- if image.width >= 1296 -%}(min-width: 1081px) 1296w, {%- endif -%}
+  {%- if image.width >= 1512 -%}(min-width: 1297px) 1512w, {%- endif -%}
+  {%- if image.width >= 1728 -%}(min-width: 1513px) 1728w, {%- endif -%}
+  {%- if image.width >= 1950 -%}(min-width: 1729px) 1950w, {%- endif -%}
+  {%- if image.width >= 2100 -%}(min-width: 1951px) 2100w, {%- endif -%}
+  {%- if image.width >= 2260 -%}(min-width: 2101px) 2260w, {%- endif -%}
+  {%- if image.width >= 2450 -%}(min-width: 2261px) 2450w, {%- endif -%}
+  {%- if image.width >= 2700 -%}(min-width: 2451px) 2700w, {%- endif -%}
+  {%- if image.width >= 3000 -%}(min-width: 2701px) 3000w, {%- endif -%}
+  {%- if image.width >= 3350 -%}(min-width: 3001px) 3350w, {%- endif -%}
+  {%- if image.width >= 3750 -%}(min-width: 3351px) 3750w, {%- endif -%}
+  {%- if image.width >= 4100 -%}(min-width: 3751px) 4100w {%- endif -%}
+{%- endcapture -%}
+
+<div class="crokit__panel-img-container">
+    {% comment %} <img src="{{ section.settings.main_image | img_url: 'master' }}" class="crokit__panel-img"> {% endcomment %}
+    {% comment %} <img src="{{ section.blocks[0].settings.panel_image | img_url: 'master' }}" class="crokit__panel-img"> {% endcomment %}
+    <img class="crokit__panel-img"
+    srcset="{{ image_srcset }}"
+    sizes="{{ image_sizes }}"
+    src="{{ image | img_url: '600x' }}"/>
+</div>
+
+<div class="crokit__panel-container">
+    {%- for block in section.blocks -%}
+
+        <style>
+            #block-{{ block.id }} .crokit__panel-title {
+
+            }
+        </style>
+
+        {% assign image = block.settings.panel_image %}
+{%- comment -%} Set default max_width {%- endcomment -%}
+{%- if max_width == blank -%}
+  {%- assign max_width = image.width -%}
+{%- endif -%}
+
+        {%- comment -%} Define image srcset values {%- endcomment -%}
+{%- capture image_srcset -%}
+    {%- if image != blank -%}
+      {%- if image.width > 180 and max_width >= 180 -%}{{ image | img_url: '180x' }} 180w, {%- endif -%}
+      {%- if image.width > 360 and max_width >= 360 -%}{{ image | img_url: '360x' }} 360w, {%- endif -%}
+      {%- if image.width > 540 and max_width >= 540 -%}{{ image | img_url: '540x' }} 540w, {%- endif -%}
+      {%- if image.width > 720 and max_width >= 720 -%}{{ image | img_url: '720x' }} 720w, {%- endif -%}
+      {%- if image.width > 900 and max_width >= 900 -%}{{ image | img_url: '900x' }} 900w, {%- endif -%}
+      {%- if image.width > 1080 and max_width >= 1080 -%}{{ image | img_url: '1080x' }} 1080w, {%- endif -%}
+      {%- if image.width > 1296 and max_width >= 1296 -%}{{ image | img_url: '1296x' }} 1296w, {%- endif -%}
+      {%- if image.width > 1512 and max_width >= 1512 -%}{{ image | img_url: '1512x' }} 1512w, {%- endif -%}
+      {%- if image.width > 1728 and max_width >= 1728 -%}{{ image | img_url: '1728x' }} 1728w, {%- endif -%}
+      {%- if image.width > 1950 and max_width >= 1950 -%}{{ image | img_url: '1950x' }} 1950w, {%- endif -%}
+      {%- if image.width > 2100 and max_width >= 2100 -%}{{ image | img_url: '2100x' }} 2100w, {%- endif -%}
+      {%- if image.width > 2260 and max_width >= 2260 -%}{{ image | img_url: '2260x' }} 2260w, {%- endif -%}
+      {%- if image.width > 2450 and max_width >= 2450 -%}{{ image | img_url: '2450x' }} 2450w, {%- endif -%}
+      {%- if image.width > 2700 and max_width >= 2700 -%}{{ image | img_url: '2700x' }} 2700w, {%- endif -%}
+      {%- if image.width > 3000 and max_width >= 3000 -%}{{ image | img_url: '3000x' }} 3000w, {%- endif -%}
+      {%- if image.width > 3350 and max_width >= 3350 -%}{{ image | img_url: '3350x' }} 3350w, {%- endif -%}
+      {%- if image.width > 3750 and max_width >= 3750 -%}{{ image | img_url: '3750x' }} 3750w, {%- endif -%}
+      {%- if image.width > 4100 and max_width >= 4100 -%}{{ image | img_url: '4100x' }} 4100w, {%- endif -%}
+      {%- comment -%}{{ image | img_url: 'master' }} {{ image.width }}w{%- endcomment -%}
+    {%- endif -%}
+  {%- endcapture -%}
+
+    <div class="crokit__panel {% if forloop.first %} crokit__panel--active{% endif %}" data-img-srcset="{{ image_srcset }}" id="block-{{ block.id }}">
+            <h4 class="crokit__panel-title">{{ block.settings.panel_heading }}</h4>
+            <div class="crokit__panel-text">{{ block.settings.panel_text }}</div>
+        </div>
+    {%- endfor -%}
+</div>
+
+{% javascript %}
+
+    // DOM Queries
+    const crokitPanelContainer = document.querySelector('.crokit__panel-container');
+    const crokitPanels = document.querySelectorAll('.crokit__panel[data-img-srcset]');
+    const crokitPanelImg = document.querySelector('.crokit__panel-img');
+
+    // Add First Image
+    /*
+    if (crokitPanels.length > 0) {
+        const firstImgSrc = crokitPanels[0].dataset.imgSrc;
+        crokitPanelImg.src = firstImgSrc;
+    }
+    */
+
+    // Grab and Scroll Functionality
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    crokitPanelContainer.addEventListener('mousedown', function(e) {
+        isDown = true;
+        startX = e.pageX - crokitPanelContainer.offsetLeft;
+        scrollLeft = crokitPanelContainer.scrollLeft;
+        crokitPanelContainer.style.cursor = 'grabbing';
+    });
+
+    crokitPanelContainer.addEventListener('mouseleave', () => {
+        isDown = false;
+        crokitPanelContainer.style.cursor = 'grab';
+    });
+
+    crokitPanelContainer.addEventListener('mouseup', () => {
+        isDown = false;
+        crokitPanelContainer.style.cursor = 'grab';
+    });
+
+    let x;
+    let walk;
+    crokitPanelContainer.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        x = e.pageX - crokitPanelContainer.offsetLeft;
+        walk = (x - startX);
+        crokitPanelContainer.scrollLeft = scrollLeft - walk;
+    });
+
+    // Event Delegation: Attach event listener to parent element
+    crokitPanelContainer.addEventListener('click', function(e) {
+        // Prevent default behaviour
+        e.preventDefault();
+
+        if (this.style.cursor === 'grabbing') return;
+
+        // Get the closest node by class of the selected element
+        const clicked = e.target.closest('.crokit__panel');
+
+        // If clicked is not defined then it will immediately finished
+        if (!clicked) return;
+
+        // Remove active class from all panels before adding it to the active one
+        crokitPanels.forEach(panel => panel.classList.remove('crokit__panel--active'));
+
+        // Add active class to the target element
+        clicked.classList.add('crokit__panel--active');
+
+        // Get dataset src of image
+        const newImgSrcset = clicked.dataset.imgSrcset;
+        console.log('New image source set:');
+        console.log(newImgSrcset);
+
+        // Replace image src
+        crokitPanelImg.srcset = newImgSrcset;
+
+    });
+
+{% endjavascript %}
+
+{% schema %}
+  {
+    "name": "CROkit Panel Carousel",
+    "tag": "section",
+    "class": "shopify-section-panel-carousel",
+    "max_blocks": 8,
+    "settings": [
+        {
+            "type": "header",
+            "content": "Panel Image Settings"
+        },
+        {
+            "type": "range",
+            "id": "panel_image_height",
+            "min": 100,
+            "max": 1200,
+            "step": 50,
+            "unit": "px",
+            "label": "Desktop Panel Image Height",
+            "default": 600
+        },
+        {
+            "type": "header",
+            "content": "Panel Container Settings"
+        },
+        {
+            "type": "color",
+            "id": "panel_container_background",
+            "label": "Background Color",
+            "default": "#454545"
+        },
+        {
+            "type": "header",
+            "content": "Panel Settings"
+        },
+        {
+            "type": "range",
+            "id": "panel_min_width",
+            "min": 350,
+            "max": 550,
+            "step": 20,
+            "unit": "px",
+            "label": "Minimum Width",
+            "default": 350
+        },
+        {
+            "type": "range",
+            "id": "panel_padding_top",
+            "min": 24,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "label": "Top Padding",
+            "default": 32
+        },
+        {
+            "type": "range",
+            "id": "panel_padding_right",
+            "min": 24,
+            "max": 100,
+            "unit": "px",
+            "label": "Right Padding",
+            "default": 32
+        },
+        {
+            "type": "range",
+            "id": "panel_padding_bottom",
+            "min": 24,
+            "max": 100,
+            "label": "Bottom Padding",
+            "unit": "px",
+            "default": 32
+        },
+        {
+            "type": "range",
+            "id": "panel_padding_left",
+            "min": 24,
+            "max": 100,
+            "label": "Left Padding",
+            "unit": "px",
+            "default": 32
+        },
+        {
+            "type": "color",
+            "id": "hover_panel_background",
+            "label": "Hover Background Color",
+            "default": "#4682A9"
+        },
+        {
+            "type": "header",
+            "content": "Active Panel Settings",
+            "info": "By default first panel is active"
+        },
+        {
+            "type": "color",
+            "id": "active_panel_background",
+            "label": "Background Color",
+            "default": "#91C8E4"
+        },
+        {
+            "type": "header",
+            "content": "Panel Heading Settings"
+        },
+        {
+            "type": "font_picker",
+            "id": "panel_heading_font",
+            "label": "Font",
+            "default": "helvetica_n4"
+        },
+        {
+            "type": "range",
+            "id": "panel_heading_font_size",
+            "min": 16,
+            "max": 72,
+            "step": 1,
+            "unit": "px",
+            "label": "Font Size",
+            "default": 32
+        },
+        {
+            "type": "color",
+            "id": "panel_heading_color",
+            "label": "Color",
+            "default": "#fff"
+        },
+        {
+            "type": "range",
+            "id": "panel_heading_bottom_margin",
+            "min": 0,
+            "max": 32,
+            "step": 1,
+            "unit": "px",
+            "label": "Bottom Margin",
+            "default": 0
+        },
+        {
+            "type": "header",
+            "content": "Panel Text Settings"
+        },
+        {
+            "type": "font_picker",
+            "id": "panel_text_font",
+            "label": "Text Font",
+            "default": "helvetica_n4"
+        },
+        {
+            "type": "range",
+            "id": "panel_text_font_size",
+            "min": 16,
+            "max": 24,
+            "step": 1,
+            "unit": "px",
+            "label": "Font Size",
+            "default": 18
+        },
+        {
+            "type": "color",
+            "id": "panel_text_color",
+            "label": "Color",
+            "default": "#fff"
+        }
+    ],
+    "blocks": [
+      {
+        "name": "Panel",
+        "type": "panel_section",
+        "settings": [
+            {
+                "type": "image_picker",
+                "id": "panel_image",
+                "label": "Panel Image"
+            },
+            {
+                "type": "header",
+                "content": "Panel Heading Settings"
+            },
+            {
+                "type": "text",
+                "id": "panel_heading",
+                "label": "Panel Heading",
+                "default": "Add your headline"
+            },
+            {
+                "type": "richtext",
+                "id": "panel_text",
+                "label": "Panel Text",
+                "default": "<p>Add your description</p>"
+            }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "CROkit Panel Carousel"
+      }
+    ]
+  }
+{% endschema %}

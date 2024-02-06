@@ -1,0 +1,17 @@
+<div class="right-menu">
+
+{% assign right-menu = linklists.right-menu.links %}
+
+<div class="footer-menu">
+  <ul>
+    {% for link in right-menu %}
+     <ul class="list-menu list-menu--inline" role="list"><li><a  href="{{ link.url }}" class="header__menu-item list-menu__item link link--text focus-inset">
+            <span >{{ link.title }}</span>
+          </a></li></ul>
+    {% endfor %}
+  </ul>
+
+</div>
+
+  
+</div>
