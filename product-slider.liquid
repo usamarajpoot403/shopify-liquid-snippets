@@ -1,0 +1,118 @@
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css"
+>
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css"
+>
+
+{%- style -%}
+    .product-slider {
+         position: relative;
+        }
+
+        .slider-for, .slider-nav {
+         display: flex;
+         overflow-x: auto;
+         scroll-snap-type: x mandatory;
+         -webkit-overflow-scrolling: touch;
+        }
+
+        .slider-for img, .slider-nav img {
+         width: 100%;
+         height: auto;
+         object-fit: cover;
+        }
+
+        .slider-nav {
+         scroll-snap-align: start;
+         margin-top: 13px;
+         overflow: hidden;
+        }
+
+        .slider-nav img {
+         cursor: pointer;
+        }
+
+    .slider-nav img {
+        height: 110px;
+        width: 110px;
+        padding: 10px;
+        border: 1px solid #F0F0F0;
+        border-radius: 1px;
+    }.slider-for img {
+      cursor: grab;
+  }
+
+    .slider-for img {
+        height: 440px;
+        border: 1px solid #F0F0F0;
+        border-radius: 1px;
+        padding: 11px;
+    }
+      .section-{{ section.id }}-padding {
+        padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+        padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+      }
+
+      @media screen and (min-width: 750px) {
+        .section-{{ section.id }}-padding {
+          padding-top: {{ section.settings.padding_top }}px;
+          padding-bottom: {{ section.settings.padding_bottom }}px;
+        }
+      }
+{%- endstyle -%}
+
+
+ {% if product.images.size > 1 %}
+      <div class="product-slider">
+        <div class="slider-for">
+          {% for image in product.images %}
+            <div>
+              <img src="{{ image.src | img_url: 'large' }}" alt="{{ image.alt | escape }}">
+            </div>
+          {% endfor %}
+        </div>
+        <div class="slider-nav">
+          {% for image in product.images %}
+            <div>
+              <img src="{{ image.src | img_url: '100x100' }}" alt="{{ image.alt | escape }}">
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% else %}
+      <img src="{{ product.featured_image | img_url: 'large' }}" alt="{{ product.featured_image.alt | escape }}">
+    {% endif %}
+
+
+
+    <script
+  src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.js"
+  integrity="sha512-+k1pnlgt4F1H8L7t3z95o3/KO+o78INEcXTbnoJQ/F2VqDVhWoaiVml/OEHv9HsVgxUaVW+IbiZPUJQfF/YxZw=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+<script>
+  $(document).ready(function(){
+   $('.slider-for').slick({
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      arrows: false,
+      fade: true,
+      asNavFor: '.slider-nav'
+   });
+   $('.slider-nav').slick({
+      slidesToShow: 4,
+         centerPadding: '60px',
+      slidesToScroll: 1,
+      asNavFor: '.slider-for',
+      dots: false,
+      focusOnSelect: true
+   });
+  });
+</script>
