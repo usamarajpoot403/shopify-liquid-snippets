@@ -1,0 +1,5 @@
+id="{% if template contains 'collection' %}collection-{{ collection.handle }}
+{% endif %}
+{% if template contains 'page' %}
+  {{ page.handle }}
+  -page{% endif %} 
