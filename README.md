@@ -40,7 +40,7 @@ Integrate customer reviews seamlessly into your product pages with this review c
 
 ## Contribution
 
-We welcome contributions to improve these snippets. If you have suggestions, bug reports, or feature requests, please create an issue or submit a pull request. Let's make Shopify themes better together!
+I welcome contributions to improve these snippets. If you have suggestions, bug reports, or feature requests, please create an issue or submit a pull request. Let's make Shopify themes better together!
 
 ## License
 
