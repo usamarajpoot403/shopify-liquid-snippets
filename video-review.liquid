@@ -1,0 +1,163 @@
+<style>
+  .videos-area h2.h0 b {
+      color: #9F70FD;
+  }
+  .video-container {
+      position: relative;
+      display: inline-block;
+      width: 25%;
+  }
+  .video-poster {
+      width: 100%;
+      cursor: pointer;
+  }
+  .play-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(0, 0, 0, 0.5);
+      border: none;
+      color: white;
+      cursor: pointer;
+      padding: 10px;
+      border-radius: 50%;
+      background: url(https://cdn.shopify.com/s/files/1/0786/7128/2478/t/18/assets/play-btn.png?v=1720740919) no-repeat center;
+      background-size: contain;
+      height: 60px;
+      width: 60px;
+  }
+  .video-container svg, .video-container img, .video-container video {
+      height: 530px;
+      object-fit: cover;
+      width: 100%;
+      border: 2px solid #FF8911;
+      border-radius: 28px;
+  }
+  .video-wrapper.flex {
+      gap: 30px;
+      justify-content: center;
+  }
+  .videos-area h2.h0 {
+      margin-bottom: 50px;
+      max-width: 60%;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+  }
+</style>
+
+<div class="videos-area py-70 {{ section.settings.classname }}">
+  <div class="page-width">
+    <h2 class="h0">{{ section.settings.heading }}</h2>
+
+    {% if section.settings.content %}
+      <div class="body">
+        {{ section.settings.content }}
+      </div>
+    {% endif %}
+
+    <div class="video-wrapper flex">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'video' -%}
+            {%- assign video_image = block.settings.video_image -%}
+            <div class="video-container">
+              {% if block.settings.video_image %}
+                {{
+                  video_image
+                  | image_url: width: video_image.width
+                  | image_tag: class: 'video-poster', loading: 'lazy'
+                }}
+              {%- else -%}
+                {{ 'image' | placeholder_svg_tag }}
+              {%- endif -%}
+              <button class="play-button" onclick="playVideo(this)"></button>
+              <video class="video" src="{{ block.settings.video_link }}" controls style="display: none;"></video>
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+<script>
+  function playVideo(button) {
+    var video = button.nextElementSibling;
+    var poster = button.previousElementSibling;
+
+    // Pause all videos
+    var allVideos = document.querySelectorAll('.video-container video');
+    var allButtons = document.querySelectorAll('.play-button');
+    var allPosters = document.querySelectorAll('.video-poster');
+
+    allVideos.forEach(function (vid) {
+      vid.style.display = 'none';
+      vid.pause();
+    });
+
+    allButtons.forEach(function (btn) {
+      btn.style.display = 'block';
+    });
+
+    allPosters.forEach(function (poster) {
+      poster.style.display = 'block';
+    });
+
+    // Play the selected video
+    if (video.style.display === "none") {
+      video.style.display = "block";
+      poster.style.display = "none";
+      button.style.display = "none";
+      video.play();
+    }
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Love Area",
+  "settings": [
+    {
+      "type": "text",
+      "id": "classname",
+      "label": "Class Name"
+    },
+    {
+      "type": "html",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Discover real reviews from satisfied customers"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Content"
+
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Video",
+      "type": "video",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "video_image",
+          "label": "Video image"
+        },
+        {
+          "type": "text",
+          "id": "video_link",
+          "label": "Video Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Love Area"
+    }
+  ]
+}
+{% endschema %}
