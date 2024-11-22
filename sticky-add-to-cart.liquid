@@ -1,0 +1,274 @@
+
+<style>
+
+
+    .sticky-add-cart {
+    background-color: #ffffffc2;
+    /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
+    transition: all 0.3s ease;
+    z-index: 1000;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    /* opacity: 0; */
+    display: flex;
+    align-items: center;
+  }
+
+  .sticky-add-cart.is-sticky {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    /* opacity: 1; */
+  }
+
+  .sticky-add-cart .left, 
+  .sticky-add-cart .right {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .sticky-add-cart .left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  }
+
+  .sticky-add-cart .right {
+    /* width: 30%; */
+    text-align: right;
+    display: flex;
+    align-items: center;
+  }
+
+.sticky-add-cart h3 {
+    font-size: 16px;
+    margin: 0;
+}
+
+
+div#sticky-add-cart .price--large * {
+    font-size: 13px !important;!i;!;
+}
+
+div#sticky-add-cart {backdrop-filter: blur(11px);}
+
+.quantity label {
+    display: none;
+}
+
+.quantity,.quantity input {
+    border: 0 !important;!i;!;
+    box-shadow: none;
+}
+
+.quantity::before,.quantity::after {
+    display: none;
+}
+
+.quantity input {
+    background: none;
+    color: #000;
+    text-align: center;
+    margin-left: 10px;
+    font-family: 'Poppins';
+}
+
+div#sticky-add-cart .page-width {
+    display: flex;
+    align-items: center;
+    max-width: 980px;
+    justify-content: space-around;
+    width: 100%;
+    padding: 14px;
+}
+
+.sticky-add-cart .left .price.price--large.price--show-badge {
+    margin-bottom: 0;
+    padding: 0;
+}
+
+select {
+    font-size: 14px;
+    border-radius: 7px;
+    padding: 8px;
+    border-color: #cfcfcf;
+    color: #8f8f8f;
+}
+div#sticky-add-cart span.badge.price__badge-sale.color-scheme-4 {
+    display: none;
+}
+.sticky-add-cart .right .quantity {
+    width: fit-content;
+    display: flex;
+    /* background: #000; */
+    justify-content: center;
+    text-align: center;
+}
+
+.sticky-add-cart .right form {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.sticky-add-cart .right button.add-to-cart-button {
+    background: #000;
+    border: 0;
+    padding: 12px 52px;
+    color: #ffff;
+    border-radius: 40px;
+    font-family: 'Poppins';
+}
+  .quantity {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .quantity-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .quantity-wrapper button {
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    border-radius: 3px;
+  }
+
+  .quantity-wrapper button:hover {
+    background-color: #e0e0e0;
+  }
+
+  .quantity-wrapper input {
+    width: 50px;
+    text-align: center;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
+</style>
+<div class="sticky-add-cart" id="sticky-add-cart">
+<div class="page-width">
+  <div class="left">
+    <!-- Product Title -->
+    <h3>{{ product.title }}</h3>
+
+    <!-- Product Price -->
+    <div id="price-{{ section.id }}" role="status" {{ block.shopify_attributes }}>
+      {%- render 'price',
+        product: product,
+        use_variant: true,
+        show_badges: true,
+        price_class: 'price--large'
+      -%}
+    </div>
+
+    <!-- Variant Selector -->
+  
+  </div>
+  <div class="variant-selector">
+      {%- if product.variants.size > 1 -%}
+        <label for="variant-select-{{ section.id }}"></label>
+        <select id="variant-select-{{ section.id }}" name="id">
+          {%- for variant in product.variants -%}
+            <option value="{{ variant.id }}" {%- if variant == product.selected_or_first_available_variant -%}selected="selected"{%- endif -%}>
+              {{ variant.title }} - {{ variant.price | money }}
+            </option>
+          {%- endfor -%}
+        </select>
+      {%- else -%}
+        <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+      {%- endif -%}
+    </div>
+  <!-- Quantity Input and Add to Cart Button -->
+  <div class="right">
+    <form method="post" action="/cart/add">
+      <!-- Dynamic Variant Input -->
+      <input type="hidden" id="variant-id-{{ section.id }}" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+
+      <!-- Quantity Input -->
+ <div class="quantity">
+  <label for="quantity-{{ section.id }}">Quantity</label>
+  <div class="quantity-wrapper">
+    <!-- Minus Button -->
+    <button type="button" class="quantity-minus" id="quantity-minus-{{ section.id }}">-</button>
+    <!-- Quantity Input -->
+    <input type="number" id="quantity-{{ section.id }}" name="quantity" value="1" min="1">
+    <!-- Plus Button -->
+    <button type="button" class="quantity-plus" id="quantity-plus-{{ section.id }}">+</button>
+  </div>
+</div>
+
+
+
+
+
+      <!-- Add to Cart Button -->
+      <button type="submit" class="add-to-cart-button">
+        Add to Cart
+      </button>
+    </form>
+  </div>
+  
+</div>
+</div>
+
+<script>
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const plusButton = document.getElementById('quantity-plus-{{ section.id }}');
+    const minusButton = document.getElementById('quantity-minus-{{ section.id }}');
+    const quantityInput = document.getElementById('quantity-{{ section.id }}');
+
+    if (plusButton && minusButton && quantityInput) {
+      // Increment the quantity when the plus button is clicked
+      plusButton.addEventListener('click', function () {
+        const currentValue = parseInt(quantityInput.value) || 0;
+        quantityInput.value = currentValue + 1;
+      });
+
+      // Decrement the quantity when the minus button is clicked
+      minusButton.addEventListener('click', function () {
+        const currentValue = parseInt(quantityInput.value) || 0;
+        if (currentValue > parseInt(quantityInput.min)) {
+          quantityInput.value = currentValue - 1;
+        }
+      });
+    }
+  });
+  
+  document.addEventListener('DOMContentLoaded', function () {
+    // Update hidden variant ID on variant change
+    const variantSelect = document.getElementById('variant-select-{{ section.id }}');
+    const variantInput = document.getElementById('variant-id-{{ section.id }}');
+
+    if (variantSelect && variantInput) {
+      variantSelect.addEventListener('change', function () {
+        variantInput.value = this.value;
+      });
+    }
+
+    // Sticky Add to Cart on Scroll with Offset
+    const stickyAddCart = document.getElementById('sticky-add-cart');
+    const offsetToShow = 200; // Offset in pixels after which the sticky cart should appear
+
+    window.addEventListener('scroll', function () {
+      if (window.pageYOffset > offsetToShow) {
+        stickyAddCart.classList.add('is-sticky');
+      } else {
+        stickyAddCart.classList.remove('is-sticky');
+      }
+    });
+  });
+</script>
