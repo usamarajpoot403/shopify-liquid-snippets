@@ -1,0 +1,148 @@
+  <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+
+
+
+{%- # Label: Our Products -%}
+{%- assign our_products = section.settings.our_products -%}
+
+{%- assign our_products_products = our_products.products -%}
+<div class="our-products">
+  <div class="title-wrap page-width {% if section.settings.bg_image %}bg-image{% endif %}" {% if section.settings.bg_image %}style="background-image:url({{ section.settings.bg_image | img_url:'master' }}{% endif %}">
+    <h2 class="h0">{{ section.settings.title }}</h2>
+    <div class="content">{{ section.settings.content }}</div>
+  </div>
+
+
+
+  <!-- Tab Navigation -->
+  <ul class="tab-nav">
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'tabs' -%}
+          {%- assign collection = block.settings.collection -%}
+          <li data-tab="{{ collection.handle }}">{{ collection.title }}</li>
+      {%- endcase -%}
+    {%- endfor -%}
+  </ul>
+
+  <!-- Tab Content -->
+  <div class="tab-content-wrapper">
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'tabs' -%}
+          {%- assign collection = block.settings.collection -%}
+          <div class="tab-content" data-collection="{{ collection.handle }}">
+            <div class="pro-wrapper">
+            {%- assign collection_products = collection.products -%}
+            {%- for product in collection_products -%}
+              {% render 'card-product', card_product: product %}
+            {%- endfor -%}
+              </div>
+          </div>
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+
+</div>
+
+
+  <!-- <a href="/products/chimichurri-sauce-1" class="button button--primary">Discover Recipes </a> -->
+
+
+
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function() {
+  // Get all tab navigation items and tab content elements
+  const tabNavItems = document.querySelectorAll('.tab-nav li');
+  const tabContents = document.querySelectorAll('.tab-content');
+
+  // Function to hide all tab content and remove active classes
+  function resetTabs() {
+    tabContents.forEach(content => {
+      content.style.display = 'none';
+    });
+    tabNavItems.forEach(item => {
+      item.classList.remove('active');
+    });
+  }
+
+  // Function to show content for the selected tab
+  function activateTab(tab) {
+    const targetCollection = tab.getAttribute('data-tab');
+    document.querySelector(`.tab-content[data-collection="${targetCollection}"]`).style.display = 'block';
+    tab.classList.add('active');
+  }
+
+  // Initial setup: activate the first tab
+  if (tabNavItems.length > 0) {
+    resetTabs();
+    activateTab(tabNavItems[0]);
+  }
+
+  // Add click event listeners to each tab navigation item
+  tabNavItems.forEach(item => {
+    item.addEventListener('click', function() {
+      resetTabs();
+      activateTab(this);
+    });
+  });
+});
+
+  
+</script>
+
+
+
+{% schema %}
+  {
+  "name": "Our Products",
+  "settings": [
+       {
+      "type": "inline_richtext",
+      "id": "title",
+      "default": "our products",
+      "label": "t:sections.multicolumn.settings.title.label"
+    }
+    ,      {
+      "type": "richtext",
+      "id": "content",
+      "default": "<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard </p>",
+      "label": "t:sections.multicolumn.settings.title.label"
+    }
+,
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Header Image"
+    }
+  ],
+
+     "blocks": [
+    {
+      "name": "Tabs",
+      "type": "tabs",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Our Products"
+    }
+  ]
+}
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}
